@@ -4,6 +4,7 @@ init:
 		go mod tidy
 build:
 		make init
+		make test
 		go build -o build/server -v ./cmd/app
 detector:
 		make build

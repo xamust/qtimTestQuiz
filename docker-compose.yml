@@ -1,0 +1,13 @@
+version: "3.6"
+services:
+  server:
+    restart: always
+    build: './server/'
+    ports:
+      - '127.0.0.1:8080:8080'
+    networks:
+     - quiz_network
+
+networks:
+  quiz_network:
+    driver: bridge
