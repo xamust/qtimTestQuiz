@@ -1,0 +1,40 @@
+### Send POST request with json body
+POST http://localhost:8080/detect
+Content-Type: application/json
+
+{
+  "str": "hello world",
+  "char": "o"
+}
+
+###
+
+POST http://localhost:8080/detect
+Content-Type: application/json
+
+{
+  "str": "Вася полетел на Луну",
+  "char": "л"
+}
+
+###
+
+POST http://localhost:8080/detect
+Content-Type: application/json
+
+{
+  "str": "Вася пол3т3л на Луну",
+  "char": "л"
+}
+
+###
+
+POST http://localhost:8080/detect
+Content-Type: application/json
+
+{
+  "str": "Вася полетел на Луну",
+  "char": "ла"
+}
+
+###

@@ -1,0 +1,6 @@
+bind_addr = ":8080"
+log_level = "debug"
+
+[counter]
+case_sensitive = false
+with_numeric = false
