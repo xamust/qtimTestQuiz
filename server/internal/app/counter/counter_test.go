@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/xamust/qtimTestQuiz/internal/app/model"
+	"sync"
 	"testing"
 )
 
 func initCounter() *Counter {
 	return &Counter{
+		Mu: new(sync.Mutex),
 		Config: &Config{
 			CaseSensitive: false,
 			WithNumeric:   false,

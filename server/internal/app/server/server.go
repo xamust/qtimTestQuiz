@@ -6,9 +6,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/xamust/qtimTestQuiz/internal/app/counter"
 	"net/http"
+	"sync"
 )
 
 type Server struct {
+	mu       *sync.Mutex
 	config   *Config
 	logger   *logrus.Logger
 	mux      *mux.Router
@@ -18,10 +20,10 @@ type Server struct {
 
 func NewServer(config *Config) *Server {
 	return &Server{
-		config:  config,
-		logger:  logrus.New(),
-		mux:     mux.NewRouter(),
-		counter: counter.NewCounter(config.Counter),
+		mu:     new(sync.Mutex),
+		config: config,
+		logger: logrus.New(),
+		mux:    mux.NewRouter(),
 	}
 }
 
@@ -35,6 +37,8 @@ func (s *Server) Start() error {
 	//config router (gorilla/mux)...
 	s.configureRouter()
 	s.logger.Info("Router ready...")
+
+	s.configureCounter()
 
 	//handlers init...
 	s.handlers = Handlers{
@@ -63,4 +67,9 @@ func (s *Server) configureLogger() error {
 func (s *Server) configureRouter() {
 	//register handle on router...
 	s.mux.HandleFunc("/detect", s.handlers.Detect)
+}
+
+//config counter...
+func (s *Server) configureCounter() {
+	s.counter = counter.NewCounter(s.config.Counter, s.mu)
 }

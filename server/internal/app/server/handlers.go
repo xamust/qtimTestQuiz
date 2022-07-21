@@ -18,7 +18,7 @@ type Handlers struct {
 func (h *Handlers) Detect(w http.ResponseWriter, r *http.Request) {
 	//check correct http method
 	if r.Method == http.MethodPost {
-
+		counter := h.counter
 		content, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			h.logger.Error(err)
@@ -26,7 +26,6 @@ func (h *Handlers) Detect(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(err.Error()))
 			return
 		}
-
 		defer r.Body.Close()
 
 		var strRequest model.Request
@@ -41,7 +40,7 @@ func (h *Handlers) Detect(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//check data and fill map...
-		if err := h.counter.CheckRaw(&strRequest); err != nil {
+		if err := counter.CheckRaw(&strRequest); err != nil {
 			h.logger.Error(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
@@ -49,7 +48,7 @@ func (h *Handlers) Detect(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//get count...
-		resultInt, err := h.counter.GetCount(strRequest.Char)
+		resultInt, err := counter.GetCount(strRequest.Char)
 		if err != nil {
 			h.logger.Error(err)
 			w.WriteHeader(http.StatusInternalServerError)

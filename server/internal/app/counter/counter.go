@@ -5,15 +5,18 @@ import (
 	"github.com/xamust/qtimTestQuiz/internal/app/model"
 	"regexp"
 	"strings"
+	"sync"
 )
 
 type Counter struct {
+	Mu      *sync.Mutex
 	Config  *Config
 	MapChar map[string]int
 }
 
-func NewCounter(config *Config) *Counter {
+func NewCounter(config *Config, mu *sync.Mutex) *Counter {
 	return &Counter{
+		Mu:      mu,
 		Config:  config,
 		MapChar: make(map[string]int),
 	}
@@ -49,8 +52,9 @@ func (c *Counter) CheckRaw(inputModel *model.Request) error {
 
 func (c *Counter) CountChar(str string) {
 	//"cleanup" map...
+	c.Mu.Lock()
+	defer c.Mu.Unlock()
 	c.MapChar = make(map[string]int)
-
 	for _, v := range str {
 		if c.Config.CaseSensitive {
 			c.MapChar[string(v)] += 1
@@ -61,6 +65,8 @@ func (c *Counter) CountChar(str string) {
 }
 
 func (c *Counter) GetCount(char string) (int, error) {
+	c.Mu.Lock()
+	defer c.Mu.Unlock()
 	tempChar := char //for case sensitive....
 	if !c.Config.CaseSensitive {
 		tempChar = strings.ToLower(char)

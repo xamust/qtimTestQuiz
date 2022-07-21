@@ -8,11 +8,13 @@ import (
 	"github.com/xamust/qtimTestQuiz/internal/app/counter"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 )
 
 func initCounter() *counter.Counter {
 	return &counter.Counter{
+		Mu: &sync.Mutex{},
 		Config: &counter.Config{
 			CaseSensitive: false,
 			WithNumeric:   false,
